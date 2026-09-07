@@ -1,14 +1,4 @@
 #!/usr/bin/env python3
-"""Barebones download server. Stdlib only.
-
-Downloads a URL, unzips it if it is a zip, then POSTs the folder path onwards.
-
-Env:
-  DOWNLOAD_PATH  directory to save downloads into (default ./downloads)
-  NOTIFY_URL     URL to POST {"path": <folder>} to after a download
-  PORT           listen port (default 8047)
-  LOG_LEVEL      logging level (default INFO, use DEBUG for per-entry zip logs)
-"""
 import json
 import logging
 import os
@@ -20,12 +10,8 @@ import urllib.request
 import zipfile
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-def env(name, default=None):
-    """Read an env var, stripping whitespace and any wrapping quotes.
 
-    Values set in a .env/compose file are often written NOTIFY_URL="https://..."
-    and arrive with the quotes still attached.
-    """
+def env(name, default=None):
     v = os.environ.get(name)
     if v is None:
         return default
@@ -50,7 +36,6 @@ log = logging.getLogger("bc-dl")
 
 
 def describe(path):
-    """Human-readable 'what is actually at this path' for log lines."""
     try:
         st = os.lstat(path)
     except FileNotFoundError:
@@ -167,9 +152,6 @@ class Handler(SimpleHTTPRequestHandler):
         return dest
 
     def unzip(self, dest):
-        # Suffix keeps the folder distinct from the archive: Bandcamp URLs end in a
-        # bare id with no extension, so splitext() strips nothing and an unsuffixed
-        # folder would collide with the archive file itself (Errno 20).
         stem = os.path.splitext(os.path.basename(dest))[0]
         folder = os.path.join(DOWNLOAD_PATH, stem + "-unzipped")
         log.info("unzip: archive=%s -> stem=%r -> target folder=%s", dest, stem, folder)
@@ -200,9 +182,6 @@ class Handler(SimpleHTTPRequestHandler):
         return folder
 
     def notify(self, folder):
-        # bisque execs `beet import <localDirectoryName>`, so this has to be a path
-        # beets can resolve on its own side, not a bare folder name. DOWNLOAD_PATH may
-        # be relative (README documents ./downloads), which would not resolve there.
         abs_folder = os.path.abspath(folder)
         if abs_folder != folder:
             log.info("notify: resolved %s -> %s", folder, abs_folder)
