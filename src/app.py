@@ -20,10 +20,25 @@ import urllib.request
 import zipfile
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-DOWNLOAD_PATH = os.environ.get("DOWNLOAD_PATH", "/downloads")
-NOTIFY_URL = os.environ.get("NOTIFY_URL")
-PORT = int(os.environ.get("PORT", "8047"))
-LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+def env(name, default=None):
+    """Read an env var, stripping whitespace and any wrapping quotes.
+
+    Values set in a .env/compose file are often written NOTIFY_URL="https://..."
+    and arrive with the quotes still attached.
+    """
+    v = os.environ.get(name)
+    if v is None:
+        return default
+    v = v.strip()
+    if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+        v = v[1:-1].strip()
+    return v or default
+
+
+DOWNLOAD_PATH = env("DOWNLOAD_PATH", "/downloads")
+NOTIFY_URL = env("NOTIFY_URL")
+PORT = int(env("PORT", "8047"))
+LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 logging.basicConfig(

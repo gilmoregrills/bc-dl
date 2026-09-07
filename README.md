@@ -27,7 +27,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - NOTIFY_URL="https://bisque.my-domain"
+      - NOTIFY_URL=https://bisque.my-domain
     volumes:
       - /path/to/downloads:/downloads # can be different if you specify a different DOWNLOAD_PATH
     ports:
