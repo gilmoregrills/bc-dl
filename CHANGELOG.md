@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/gilmoregrills/bc-dl/compare/v1.0.0...v1.0.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* strip quotes from envvars for dummies like me ([e8d84df](https://github.com/gilmoregrills/bc-dl/commit/e8d84dffb1501159f08e1295b5d2848049d1d4c3))
+
 ## 1.0.0 (2026-09-07)
 
 
