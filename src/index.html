@@ -1,0 +1,21 @@
+<!doctype html>
+<title>bc-dl</title>
+<h1>bc-dl</h1>
+<form id="f">
+  <input name="url" size="60" placeholder="https://example.com/file.zip" required>
+  <button>Download</button>
+</form>
+<pre id="out"></pre>
+<script>
+document.getElementById('f').onsubmit = async e => {
+  e.preventDefault();
+  const out = document.getElementById('out');
+  out.textContent = 'downloading...';
+  const res = await fetch('/download', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({url: e.target.url.value})
+  });
+  out.textContent = await res.text();
+};
+</script>
